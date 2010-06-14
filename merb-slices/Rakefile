@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rake'
+require File.expand_path("../../shared/tasks", __FILE__)
 
 # Load this library's version information
 require File.expand_path('../lib/merb-slices/version', __FILE__)

@@ -1,5 +1,4 @@
-require File.expand_path("../merb-core/lib/merb-core/version.rb", __FILE__)
-
+require File.expand_path("../shared/tasks", __FILE__)
 require 'fileutils'
 
 ROOT = File.dirname(__FILE__)
@@ -21,50 +20,45 @@ merb_stack_gems = [
   { :name => 'merb',                  :path => "#{ROOT}/merb"                  }
 ]
 
+rm_task :install
+rm_task :build
 
-def gem_command(command)
-  sh "#{RUBY} -S gem #{command}"
-end
+namespace :stack do
+  desc "Install all merb stack gems"
+  task :install do
+    merb_stack_gems.each do |gem_info|
+      Dir.chdir(gem_info[:path]) { rake_command "install"  }
+    end
+  end
 
-def rake_command(command)
-  sh "#{RUBY} -S rake #{command}"
-end
+  desc "Uninstall all merb stack gems"
+  task :uninstall do
+    merb_stack_gems.each do |gem_info|
+      gem_command "uninstall #{gem_info[:name]} --version=#{Merb::VERSION}"
+    end
+  end
 
+  desc "Build all merb stack gems"
+  task :build do
+    merb_stack_gems.each do |gem_info|
+      Dir.chdir(gem_info[:path]) { rake_command "build" }
+    end
+  end
 
-desc "Install all merb stack gems"
-task :install do
-  merb_stack_gems.each do |gem_info|
-    Dir.chdir(gem_info[:path]) { rake_command "install" }
+  desc "Generate gemspecs for all merb stack gems"
+  task :gemspec do
+    merb_stack_gems.each do |gem_info|
+      Dir.chdir(gem_info[:path]) { rake_command "gemspec" }
+    end
+  end
+
+  desc "Run specs for all merb stack gems"
+  task :spec do
+    # Omit the merb metagem, no specs there
+    merb_stack_gems[0..-2].each do |gem_info|
+      Dir.chdir(gem_info[:path]) { rake_command "spec" }
+    end
   end
 end
 
-desc "Uninstall all merb stack gems"
-task :uninstall do
-  merb_stack_gems.each do |gem_info|
-    gem_command "uninstall #{gem_info[:name]} --version=#{Merb::VERSION}"
-  end
-end
-
-desc "Build all merb stack gems"
-task :build do
-  merb_stack_gems.each do |gem_info|
-    Dir.chdir(gem_info[:path]) { rake_command "build" }
-  end
-end
-
-desc "Generate gemspecs for all merb stack gems"
-task :gemspec do
-  merb_stack_gems.each do |gem_info|
-    Dir.chdir(gem_info[:path]) { rake_command "gemspec" }
-  end
-end
-
-desc "Run specs for all merb stack gems"
-task :spec do
-  # Omit the merb metagem, no specs there
-  merb_stack_gems[0..-2].each do |gem_info|
-    Dir.chdir(gem_info[:path]) { rake_command "spec" }
-  end
-end
-
-task :default => 'spec'
+task :default => 'stack:spec'

@@ -7,7 +7,7 @@ require File.expand_path('../../merb-core/lib/merb-core/version', __FILE__)
 require 'date'
 
 # What version of DM we need
-DM_VERSION_REQUIREMENT = '>= 0.10.0'.freeze
+DM_VERSION_REQUIREMENT = '~> 1.0'.freeze
 
 Gem::Specification.new do |gem|
   gem.name        = 'merb'
@@ -36,8 +36,8 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'merb-param-protection', "= #{Merb::VERSION}"
   gem.add_dependency 'merb-slices',           "= #{Merb::VERSION}"
   gem.add_dependency 'merb_datamapper',       "= #{Merb::VERSION}"
-  gem.add_dependency 'data_mapper',           DM_VERSION_REQUIREMENT
-  gem.add_dependency 'do_sqlite3',            DM_VERSION_REQUIREMENT
+  gem.add_dependency 'dm-core',               DM_VERSION_REQUIREMENT
+  gem.add_dependency 'dm-sqlite-adapter',     DM_VERSION_REQUIREMENT
   gem.add_dependency 'rspec'
 
   # Requirements

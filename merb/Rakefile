@@ -1,0 +1,7 @@
+require 'rubygems'
+require 'rake'
+require File.expand_path("../../shared/tasks", __FILE__)
+
+# Load this library's version information
+require File.expand_path('../../merb-core/lib/merb-core/version', __FILE__)
+
